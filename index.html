@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Air Bridge Harvester</title>
+  <script src="script.js" defer></script>
+  <link rel="stylesheet" type="text/css" href="styles.css">
+</head>
+
+<body>
+  <button id="playButton" onclick="playVideo()">Connect to Grain Cart</button>
+
+  <div id='loadingMessage' class='loadingRow'>
+    <div class='loadingCol'>
+      <h1>Grain cart is full. Disconnecting... </h1>
+    </div>
+    <div class="loadingCol loader"></div>
+  </div>
+
+  <br><br>
+  <video id="videoPlayer" disablePictureInPicture>
+    <source src="/video" type="video/webm">
+    Your browser does not support the video tag.
+  </video>
+</body>
+
+</html>

@@ -1,0 +1,77 @@
+body {
+  background: snow;
+}
+
+button {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -80%);
+
+  --light-color: #009e05;
+  --dark-color: #006603;
+
+  background: var(--light-color);
+  background-image: linear-gradient(to bottom, var(--light-color), var(--dark-color));
+  border-radius: 28px;
+  font-family: Arial;
+  color: #ffffff;
+  font-size: 80px;
+  padding: 10px 20px 10px 20px;
+  text-decoration: none;
+}
+
+button:hover {
+  --light-color: #006603;
+  --dark-color: #004d01;
+
+  background: var(--light-color);
+  background-image: linear-gradient(to bottom, var(--light-color), var(--dark-color));
+  text-decoration: none;
+}
+
+.loadingRow {
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 65%;
+  transform: translate(-50%, -65%);
+  width: 90%;
+}
+
+.loadingCol {
+  display: inline-block;
+  padding: 1rem 1rem;
+  font-family: system-ui, sans-serif;
+  font-size: 48px;
+  vertical-align: middle;
+  text-align: center;
+}
+
+.loader {
+  border: 16px solid lightgrey;
+  border-top: 16px solid green;
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  animation: spin 2s linear infinite;
+}
+
+video {
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 90%;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
