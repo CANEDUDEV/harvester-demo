@@ -1,0 +1,24 @@
+From paired state:
+
+1. Master unpair from slave: DIC=0xCAD0 with  RF ID = 0
+2. Master initiate pairing: DID=0xCAD1 with Activate = 1
+3. Detected slave's ID (0x090101) will be reported at DID=0xAED1 (last 3 bytes)
+4. Master pair to slave: DID=0xCAD2 with slave ID as last 3 bytes.
+
+OR
+1. Unpair
+2. Skip 2 and 3 above, use 0xCAD0 to pair with slave ID directly.
+
+Always unpair at startup.
+
+Trigger steps 2-4 from IO board on switch press or depress.
+Program new switch for connecting to harvester or use SW1?
+
+Trigger step 1 by CAN message sent on PC CAN bus when button is pressed in browser.
+
+- How to disable Car RC when paired? When should it be enabled again? Which faults can occur, how do we handle them?
+
+- How do 3 air bridges work together when pairing/unpairing?
+
+Feedback to Kvaser:
+- Both 0xCAD0 and 0xCAD2 have unpair option in management interface docs, but only 0xCAD0 works for unpairing.
