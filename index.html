@@ -8,7 +8,7 @@
 </head>
 
 <body>
-  <button id="playButton" onclick="playVideo()">Connect to Grain Cart</button>
+  <button id="playButton" onclick="playVideo()">Connect to grain cart</button>
 
   <div id='loadingMessage' class='loadingRow'>
     <div class='loadingCol'>
@@ -17,11 +17,14 @@
     <div class="loadingCol loader"></div>
   </div>
 
-  <br><br>
-  <video id="videoPlayer" disablePictureInPicture>
-    <source src="/video" type="video/webm">
-    Your browser does not support the video tag.
-  </video>
+  <div>
+    <video id="videoPlayer" disablePictureInPicture loop>
+      <source src="/video" type="video/webm">
+      Your browser does not support the video tag.
+    </video>
+    <button id="finishButton" onclick="stopVideo()">Finish harvesting</button>
+  </div>
+
 </body>
 
 </html>

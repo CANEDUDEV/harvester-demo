@@ -1,5 +1,7 @@
+import time
+
 from aiohttp import web
-from canlib import canlib, Frame
+from canlib import Frame, canlib
 
 ch = None
 
@@ -39,8 +41,14 @@ async def video_events_handler(request):
     await ws.prepare(request)
 
     async for msg in ws:
-        print("received:", msg)
-        send_disconnect()
+        try:
+            send_disconnect()
+        except canlib.exceptions.CanTimeout:
+            print("Air bridge not connected, timed out.")
+
+        finally:
+            time.sleep(3)
+            await ws.send_str("disconnected")
 
     return ws
 

@@ -3,11 +3,6 @@ body {
 }
 
 button {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -80%);
-
   --light-color: #009e05;
   --dark-color: #006603;
 
@@ -28,6 +23,21 @@ button:hover {
   background: var(--light-color);
   background-image: linear-gradient(to bottom, var(--light-color), var(--dark-color));
   text-decoration: none;
+}
+
+#playButton {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -80%);
+}
+
+#finishButton {
+  display: none;
+  position: fixed;
+  top: 90%;
+  left: 10%;
+  transform: translate(-10%, -90%);
 }
 
 .loadingRow {
