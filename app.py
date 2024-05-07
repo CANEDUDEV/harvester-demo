@@ -1,10 +1,11 @@
-import time
 import binascii
+import time
 
 from aiohttp import web
 from canlib import Frame, canlib
 
 ch = None
+
 
 def open_channel(channel):
     global ch
@@ -21,28 +22,53 @@ def send_disconnect():
     if ch is not None:
         ch.writeWait(f, 200)
 
+
 async def wait_for_connect():
-    if ch is not None:
-        try:
-            ch.iocontrol.flush_rx_buffer()
-            ch.read(timeout=1000)
-            print("received CAN message.")
-            return True
-        except canlib.exceptions.CanNoMsg:
-            pass
+    if ch is None:
+        return
+
+    try:
+        ch.iocontrol.flush_rx_buffer()
+        ch.read(timeout=1000)
+        print("received CAN message.")
+        return True
+    except canlib.exceptions.CanNoMsg:
+        pass
 
     return False
 
-async def get_airbridge_serial():
-    if ch is not None:
-        f = Frame(id_=0x500, dlc=8, data=[0x03, 0x02, 0xE0, 0x41])
-        ch.iocontrol.flush_rx_buffer()
-        ch.write(f)
-        ch.readSyncSpecific(0x501, timeout=1000)
-        received = ch.readSpecificSkip(0x501)
-        serial = binascii.hexlify(received.data[5:]).decode()
-        return serial
 
+def disable_car_controls():
+    if ch is None:
+        return
+
+    disable_steering = Frame(id_=0x0, dlc=8, data=[4, 2, 0, 1, 0, 0, 0, 0])
+    ch.write(disable_steering)
+    disable_throttle = Frame(id_=0x0, dlc=8, data=[4, 2, 1, 1, 0, 0, 0, 0])
+    ch.write(disable_throttle)
+
+
+def enable_car_controls():
+    if ch is None:
+        return
+
+    enable_steering = Frame(id_=0x0, dlc=8, data=[4, 2, 0, 1, 0, 0, 0, 1])
+    ch.write(enable_steering)
+    enable_throttle = Frame(id_=0x0, dlc=8, data=[4, 2, 1, 1, 0, 0, 0, 1])
+    ch.write(enable_throttle)
+
+
+async def get_airbridge_serial():
+    if ch is None:
+        return 0
+
+    f = Frame(id_=0x500, dlc=8, data=[0x03, 0x02, 0xE0, 0x41])
+    ch.iocontrol.flush_rx_buffer()
+    ch.write(f)
+    ch.readSyncSpecific(0x501, timeout=1000)
+    received = ch.readSpecificSkip(0x501)
+    serial = binascii.hexlify(received.data[5:]).decode()
+    return serial
 
 
 async def handle(request):
@@ -65,11 +91,12 @@ async def video_events_handler(request):
 
     async for msg in ws:
         if msg.data == "connect":
-                connected = await wait_for_connect()
-                if connected:
-                    await ws.send_str("connected")
-                else:
-                    await ws.send_str("disconnected")
+            connected = await wait_for_connect()
+            if connected:
+                disable_car_controls()
+                await ws.send_str("connected")
+            else:
+                await ws.send_str("disconnected")
 
         if msg.data == "identify":
             serial = await get_airbridge_serial()
@@ -77,7 +104,9 @@ async def video_events_handler(request):
 
         if msg.data == "disconnect":
             try:
+                enable_car_controls()
                 send_disconnect()
+
             except canlib.exceptions.CanTimeout:
                 print("Air bridge not connected, timed out.")
 
