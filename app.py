@@ -1,4 +1,5 @@
 import time
+import binascii
 
 from aiohttp import web
 from canlib import Frame, canlib
@@ -32,6 +33,18 @@ async def wait_for_connect():
 
     return False
 
+async def get_airbridge_serial():
+    if ch is not None:
+        f = Frame(id_=0x500, dlc=8, data=[0x03, 0x02, 0xE0, 0x41])
+        ch.iocontrol.flush_rx_buffer()
+        ch.write(f)
+        ch.readSyncSpecific(0x501, timeout=1000)
+        received = ch.readSpecificSkip(0x501)
+        serial = binascii.hexlify(received.data[5:]).decode()
+        return serial
+
+
+
 async def handle(request):
     # Serve the video file
     filename = "harvest.webm"
@@ -50,7 +63,6 @@ async def video_events_handler(request):
     ws = web.WebSocketResponse()
     await ws.prepare(request)
 
-
     async for msg in ws:
         if msg.data == "connect":
                 connected = await wait_for_connect()
@@ -58,6 +70,10 @@ async def video_events_handler(request):
                     await ws.send_str("connected")
                 else:
                     await ws.send_str("disconnected")
+
+        if msg.data == "identify":
+            serial = await get_airbridge_serial()
+            await ws.send_str(f"identified:{serial}")
 
         if msg.data == "disconnect":
             try:

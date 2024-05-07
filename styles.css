@@ -32,7 +32,7 @@ button:hover {
 #finishButton {
   display: none;
   position: fixed;
-  top: 90%;
+  top: 10%;
   left: 10%;
   transform: translate(-10%, -90%);
 }

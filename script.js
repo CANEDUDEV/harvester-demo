@@ -8,15 +8,22 @@ socket.onmessage = function(event) {
   if (event.data === "connected") {
     playVideo();
   }
+
   if (event.data === "disconnected") {
     restartDemo();
   }
+
+  if (event.data.startsWith("identified")) {
+    id = event.data.split(":")[1];
+    updateIdentifier(id);
+  }
 }
 
+
 function restartDemo() {
-  socket.send("connect");
   document.getElementById('loadingMessage').style.display = 'none';
   document.getElementById('waitingMessage').style.display = 'block';
+  socket.send("connect");
 }
 
 function playVideo() {
@@ -26,6 +33,7 @@ function playVideo() {
   video.currentTime = 0;
   video.style.display = 'block';
   video.play();
+  socket.send("identify");
 }
 
 function stopVideo() {
@@ -35,4 +43,8 @@ function stopVideo() {
   video.pause();
   video.style.display = 'none';
   socket.send("disconnect");
+}
+
+function updateIdentifier(id) {
+  document.getElementById('finishButton').innerText = `Finish harvesting from cart ${id}`;
 }
