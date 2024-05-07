@@ -5,7 +5,6 @@ from canlib import Frame, canlib
 
 ch = None
 
-
 def open_channel(channel):
     global ch
     ch = canlib.openChannel(
@@ -21,6 +20,17 @@ def send_disconnect():
     if ch is not None:
         ch.writeWait(f, 200)
 
+async def wait_for_connect():
+    if ch is not None:
+        try:
+            ch.iocontrol.flush_rx_buffer()
+            ch.read(timeout=1000)
+            print("received CAN message.")
+            return True
+        except canlib.exceptions.CanNoMsg:
+            pass
+
+    return False
 
 async def handle(request):
     # Serve the video file
@@ -40,15 +50,24 @@ async def video_events_handler(request):
     ws = web.WebSocketResponse()
     await ws.prepare(request)
 
-    async for msg in ws:
-        try:
-            send_disconnect()
-        except canlib.exceptions.CanTimeout:
-            print("Air bridge not connected, timed out.")
 
-        finally:
-            time.sleep(3)
-            await ws.send_str("disconnected")
+    async for msg in ws:
+        if msg.data == "connect":
+                connected = await wait_for_connect()
+                if connected:
+                    await ws.send_str("connected")
+                else:
+                    await ws.send_str("disconnected")
+
+        if msg.data == "disconnect":
+            try:
+                send_disconnect()
+            except canlib.exceptions.CanTimeout:
+                print("Air bridge not connected, timed out.")
+
+            finally:
+                time.sleep(3)
+                await ws.send_str("disconnected")
 
     return ws
 

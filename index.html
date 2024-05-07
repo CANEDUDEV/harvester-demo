@@ -8,7 +8,12 @@
 </head>
 
 <body>
-  <button id="playButton" onclick="playVideo()">Connect to grain cart</button>
+   <div id='waitingMessage' class='loadingRow'>
+    <div class='loadingCol'>
+      <h1>Waiting for grain cart to connect...</h1>
+    </div>
+    <div class="loadingCol loader"></div>
+  </div>
 
   <div id='loadingMessage' class='loadingRow'>
     <div class='loadingCol'>

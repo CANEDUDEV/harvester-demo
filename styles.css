@@ -25,11 +25,8 @@ button:hover {
   text-decoration: none;
 }
 
-#playButton {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -80%);
+#loadingMessage {
+  display: none;
 }
 
 #finishButton {
@@ -41,7 +38,6 @@ button:hover {
 }
 
 .loadingRow {
-  display: none;
   position: fixed;
   top: 50%;
   left: 65%;

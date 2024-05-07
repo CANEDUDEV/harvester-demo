@@ -1,22 +1,26 @@
 var socket = new WebSocket("ws://localhost:8080/video-events");
 
 socket.onopen = function(event) {
-  console.log("WebSocket connection established.");
+  socket.send("connect");
 };
 
 socket.onmessage = function(event) {
+  if (event.data === "connected") {
+    playVideo();
+  }
   if (event.data === "disconnected") {
     restartDemo();
   }
 }
 
 function restartDemo() {
+  socket.send("connect");
   document.getElementById('loadingMessage').style.display = 'none';
-  document.getElementById('playButton').style.display = 'block';
+  document.getElementById('waitingMessage').style.display = 'block';
 }
 
 function playVideo() {
-  document.getElementById('playButton').style.display = 'none';
+  document.getElementById('waitingMessage').style.display = 'none';
   document.getElementById('finishButton').style.display = 'block';
   var video = document.getElementById('videoPlayer');
   video.currentTime = 0;
@@ -30,6 +34,5 @@ function stopVideo() {
   var video = document.getElementById('videoPlayer');
   video.pause();
   video.style.display = 'none';
-  var message = { event: 'videoEnded' };
-  socket.send(JSON.stringify(message));
+  socket.send("disconnect");
 }
