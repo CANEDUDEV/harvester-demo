@@ -82,6 +82,9 @@ async def index(request):
     # Serve the HTML page
     with open("index.html", "r") as file:
         html_content = file.read()
+
+    send_disconnect()
+
     return web.Response(text=html_content, content_type="text/html")
 
 

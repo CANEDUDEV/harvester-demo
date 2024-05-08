@@ -11,7 +11,7 @@ button {
   border-radius: 28px;
   font-family: Arial;
   color: #ffffff;
-  font-size: 80px;
+  font-size: 60px;
   padding: 10px 20px 10px 20px;
   text-decoration: none;
 }
@@ -33,9 +33,10 @@ button:hover {
 #finishButton {
   display: none;
   position: fixed;
-  top: 10%;
+  top: 20%;
   left: 10%;
   transform: translate(-10%, -90%);
+  width: 30%;
 }
 
 .loadingRow {

@@ -1,7 +1,7 @@
 var socket = new WebSocket("ws://localhost:8080/video-events");
 
 socket.onopen = function(event) {
-  socket.send("connect");
+  restartDemo();
 };
 
 socket.onmessage = function(event) {
@@ -46,5 +46,5 @@ function stopVideo() {
 }
 
 function updateIdentifier(id) {
-  document.getElementById('finishButton').innerText = `Finish harvesting from cart ${id}`;
+  document.getElementById('finishButton').innerText = `Press to finish harvesting from cart ${id}`;
 }
