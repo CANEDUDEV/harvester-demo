@@ -27,6 +27,7 @@ button:hover {
 
 #loadingMessage {
   display: none;
+  left: 60%;
 }
 
 #finishButton {
