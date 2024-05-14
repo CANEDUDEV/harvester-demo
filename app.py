@@ -25,7 +25,7 @@ def send_disconnect():
 
 async def wait_for_connect():
     if ch is None:
-        return
+        return False
 
     try:
         ch.iocontrol.flush_rx_buffer()
@@ -88,7 +88,7 @@ async def index(request):
     return web.Response(text=html_content, content_type="text/html")
 
 
-async def video_events_handler(request):
+async def connection_event_handler(request):
     ws = web.WebSocketResponse()
     await ws.prepare(request)
 
@@ -138,7 +138,7 @@ async def init():
     app = web.Application()
     app.router.add_get("/video", handle)
     app.router.add_get("/", index)
-    app.router.add_get("/video-events", video_events_handler)
+    app.router.add_get("/connection-events", connection_event_handler)
     app.router.add_get("/script.js", javascript)
     app.router.add_get("/styles.css", css)
     return app

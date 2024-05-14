@@ -1,4 +1,4 @@
-var socket = new WebSocket("ws://localhost:8080/video-events");
+var socket = new WebSocket("ws://localhost:8080/connection-events");
 
 socket.onopen = function(event) {
   restartDemo();
